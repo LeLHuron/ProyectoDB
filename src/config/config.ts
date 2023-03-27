@@ -1,10 +1,11 @@
 import mysql from 'mysql2';
+import path from 'path';
 
 export const dbConfig = {
     host: 'localhost',
     user: 'root',
     password: 'password', // La contraseña que configuraste para tu usuario de MySQL
-    database: 'la_buena.sql',
+    database: path.join(__dirname, 'database', 'sql', 'la buena.sql'),
     port: 3306,
     waitForConnections: true,
     connectionLimit: 10,

@@ -3,7 +3,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 
 import { createConnection } from 'mysql2/promise';
 
-import { dbConfig } from '.graphql-server/src/config.ts';
+import { dbConfig } from './config/config';
 
 async function connectToDatabase() {
   const connection = await createConnection({
