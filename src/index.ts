@@ -3,7 +3,10 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 
 import { createConnection } from 'mysql2/promise';
 
-import { dbConfig } from './config/config';
+import typeDefs from './schema';
+import resolvers from './resolvers';
+
+import { pool } from './config/config';
 
 async function connectToDatabase() {
   const connection = await createConnection({

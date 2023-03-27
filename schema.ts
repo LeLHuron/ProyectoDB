@@ -1,21 +1,90 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
+import { connection } from './src/config/config';
 
-export const typeDefs = gql`
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    password: String!
+// Definimos el tipo Usuario, el cual corresponde a la tabla 'usuario' de la base de datos
+const Usuario = gql`
+  type Usuario {
+    id: Int
+    nombre: String
+    correo: String
   }
 
-  type Query {
-    getUser(id: ID!): User
-    getUsers: [User]
+  extend type Query {
+    usuarios: [Usuario]
+    usuario(id: Int!): Usuario
   }
 
-  type Mutation {
-    addUser(name: String!, email: String!, password: String!): User!
-    updateUser(id: ID!, name: String, email: String, password: String): User!
-    deleteUser(id: ID!): ID!
+  extend type Mutation {
+    agregarUsuario(nombre: String!, correo: String!): Usuario
+    actualizarUsuario(id: Int!, nombre: String, correo: String): Usuario
+    eliminarUsuario(id: Int!): Usuario
   }
 `;
+
+// Definimos los resolvers correspondientes al tipo Usuario
+const UsuarioResolvers = {
+  Query: {
+    usuarios: () => {
+      return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM usuario', (err, rows) => {
+          if (err) return reject(err);
+          resolve(rows);
+        });
+      });
+    },
+    usuario: (root, args) => {
+      return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM usuario WHERE id = ?', [args.id], (err, rows) => {
+          if (err) return reject(err);
+          resolve(rows[0]);
+        });
+      });
+    },
+  },
+  Mutation: {
+    agregarUsuario: (root, args) => {
+      return new Promise((resolve, reject) => {
+        connection.query('INSERT INTO usuario (nombre, correo) VALUES (?, ?)', [args.nombre, args.correo], (err, result) => {
+          if (err) return reject(err);
+          connection.query('SELECT * FROM usuario WHERE id = ?', [result.insertId], (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows[0]);
+          });
+        });
+      });
+    },
+    actualizarUsuario: (root, args) => {
+      return new Promise((resolve, reject) => {
+        connection.query('UPDATE usuario SET nombre = ?, correo = ? WHERE id = ?', [args.nombre, args.correo, args.id], (err, result) => {
+          if (err) return reject(err);
+          connection.query('SELECT * FROM usuario WHERE id = ?', [args.id], (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows[0]);
+          });
+        });
+      });
+    },
+    eliminarUsuario: (root, args) => {
+      return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM usuario WHERE id = ?', [args.id], (err, rows) => {
+          if (err) return reject(err);
+          connection.query('DELETE FROM usuario WHERE id = ?', [args.id], (err, result) => {
+            if (err) return reject(err);
+            resolve(rows[0]);
+          });
+        });
+      });
+    },
+  },
+};
+
+// Definimos el tipo Producto, el cual corresponde a la tabla 'producto' de la base de datos
+const Producto = gql`
+  type Producto {
+    id: Int
+    nombre: String
+    precio: Float
+  }
+
+  extend type Query {
+   

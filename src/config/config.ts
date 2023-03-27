@@ -11,3 +11,5 @@ export const dbConfig = {
     connectionLimit: 10,
     queueLimit: 0,
   };
+
+  export const pool = mysql.createPool(dbConfig);
