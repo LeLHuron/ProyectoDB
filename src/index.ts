@@ -37,7 +37,11 @@ const typeDefs = `#graphql
   type Query {
     books: [Book]
   }
+
+  
 `;
+
+
 const books = [
     {
       title: 'The Awakening',

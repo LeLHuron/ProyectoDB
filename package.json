@@ -15,7 +15,7 @@
   "dependencies": {
     "@apollo/server": "^4.5.0",
     "graphql": "^16.6.0",
-    "mysql2": "^3.2.0"
+    "mysql2": "^2.2.5"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
